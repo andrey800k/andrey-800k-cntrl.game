@@ -1,0 +1,127 @@
+[ERROR] 23:48:29 Не заданы SUPABASE_URL / SUPABASE_SERVICE_KEY. Создай E:\Download\files\agent\.env
+[ERROR] 23:51:04 Не заданы SUPABASE_URL / SUPABASE_SERVICE_KEY. Создай E:\Download\files\agent\.env
+[INFO] 23:51:49 Агент запущен (опрос 5 с, отправка 60 с, AFK-лимит 10 мин)
+[INFO] 23:51:49 Ищу игры: загружаю каталог из Supabase...
+[WARNING] 23:51:49 Каталог из БД недоступен (401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id,name,process_name | {"message":"Invalid API key","hint":"Double check your API key."}). Работаю со встроенным списком/кэшем.
+[INFO] 23:51:49 Игр в каталоге: 24 (из БД: 0)
+[INFO] 23:51:54 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:52:04 Отслеживаю окно: Dota 2 (dota2.exe)
+[INFO] 23:52:04 Обнаружена игра: Dota 2
+[INFO] 23:52:10 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:52:10 Игра потеряла фокус — пауза: Dota 2
+[INFO] 23:52:15 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:52:20 Отслеживаю окно: Game Time Tracker - Google Chrome (chrome.exe)
+[INFO] 23:52:25 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:52:30 Отслеживаю окно: Наложение Ножниц (snippingtool.exe)
+[INFO] 23:52:35 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:52:40 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:52:40 Сессия завершена (игра закрыта или свёрнута): Dota 2, играл 0 мин 5 с
+[INFO] 23:52:51 Ищу игры: загружаю каталог из Supabase...
+[WARNING] 23:52:51 Каталог из БД недоступен (401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id,name,process_name | {"message":"Invalid API key","hint":"Double check your API key."}). Работаю со встроенным списком/кэшем.
+[INFO] 23:52:51 Игр в каталоге: 24 (из БД: 0)
+[WARNING] 23:52:51 Не удалось получить id для 'Dota 2': 401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id&name=eq.Dota%202 | {"message":"Invalid API key","hint":"Double check your API key."}
+[WARNING] 23:52:51 Нет id игры 'Dota 2' — накопленное время сохраню до следующей попытки
+[INFO] 23:53:01 Отслеживаю окно: — (explorer.exe)
+[INFO] 23:53:06 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:53:11 Отслеживаю окно: ● .env - files - Visual Studio Code (code.exe)
+[INFO] 23:53:21 Отслеживаю окно: Dota 2 (dota2.exe)
+[INFO] 23:53:21 Обнаружена игра: Dota 2
+[INFO] 23:53:27 Отслеживаю окно: Game Time Tracker - Google Chrome (chrome.exe)
+[INFO] 23:53:27 Игра потеряла фокус — пауза: Dota 2
+[INFO] 23:53:32 Отслеживаю окно: ● .env - files - Visual Studio Code (code.exe)
+[INFO] 23:53:37 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:53:52 Ищу игры: загружаю каталог из Supabase...
+[WARNING] 23:53:53 Каталог из БД недоступен (401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id,name,process_name | {"message":"Invalid API key","hint":"Double check your API key."}). Работаю со встроенным списком/кэшем.
+[INFO] 23:53:53 Игр в каталоге: 24 (из БД: 0)
+[WARNING] 23:53:53 Не удалось получить id для 'Dota 2': 401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id&name=eq.Dota%202 | {"message":"Invalid API key","hint":"Double check your API key."}
+[WARNING] 23:53:53 Нет id игры 'Dota 2' — накопленное время сохраню до следующей попытки
+[INFO] 23:53:59 Сессия завершена (игра закрыта или свёрнута): Dota 2, играл 0 мин 5 с
+[INFO] 23:54:09 Отслеживаю окно: Game Time Tracker - Google Chrome (chrome.exe)
+[INFO] 23:54:14 Отслеживаю окно: General | Settings | My Project | shutenko2aa@gmail.com | Supabase - Google Chrome (chrome.exe)
+[INFO] 23:54:24 Отслеживаю окно: API Keys | Settings | My Project | shutenko2aa@gmail.com | Supabase - Google Chrome (chrome.exe)
+[INFO] 23:54:39 Отслеживаю окно: Organizations | Supabase - Google Chrome (chrome.exe)
+[INFO] 23:54:44 Отслеживаю окно: Dota 2 (dota2.exe)
+[INFO] 23:54:44 Обнаружена игра: Dota 2
+[INFO] 23:54:55 Ищу игры: загружаю каталог из Supabase...
+[WARNING] 23:54:55 Каталог из БД недоступен (401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id,name,process_name | {"message":"Invalid API key","hint":"Double check your API key."}). Работаю со встроенным списком/кэшем.
+[INFO] 23:54:55 Игр в каталоге: 24 (из БД: 0)
+[WARNING] 23:54:56 Не удалось получить id для 'Dota 2': 401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id&name=eq.Dota%202 | {"message":"Invalid API key","hint":"Double check your API key."}
+[WARNING] 23:54:56 Нет id игры 'Dota 2' — накопленное время сохраню до следующей попытки
+[INFO] 23:55:31 Отслеживаю окно: Organizations | Supabase - Google Chrome (chrome.exe)
+[INFO] 23:55:31 Игра потеряла фокус — пауза: Dota 2
+[INFO] 23:55:36 Отслеживаю окно: Game Time Tracker - Google Chrome (chrome.exe)
+[INFO] 23:55:41 Отслеживаю окно: API Keys | Settings | My Project | shutenko2aa@gmail.com | Supabase - Google Chrome (chrome.exe)
+[INFO] 23:55:56 Ищу игры: загружаю каталог из Supabase...
+[WARNING] 23:55:57 Каталог из БД недоступен (401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id,name,process_name | {"message":"Invalid API key","hint":"Double check your API key."}). Работаю со встроенным списком/кэшем.
+[INFO] 23:55:57 Игр в каталоге: 24 (из БД: 0)
+[INFO] 23:55:57 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[WARNING] 23:55:57 Не удалось получить id для 'Dota 2': 401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id&name=eq.Dota%202 | {"hint":"Double check your API key.","message":"Invalid API key"}
+[WARNING] 23:55:57 Нет id игры 'Dota 2' — накопленное время сохраню до следующей попытки
+[INFO] 23:56:03 Отслеживаю окно: API Keys | Settings | My Project | shutenko2aa@gmail.com | Supabase - Google Chrome (chrome.exe)
+[INFO] 23:56:03 Сессия завершена (игра закрыта или свёрнута): Dota 2, играл 0 мин 47 с
+[INFO] 23:56:08 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:56:18 Отслеживаю окно: ● .env - files - Visual Studio Code (code.exe)
+[INFO] 23:56:23 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:56:33 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:56:48 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:56:58 Ищу игры: загружаю каталог из Supabase...
+[WARNING] 23:56:59 Каталог из БД недоступен (401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id,name,process_name | {"message":"Invalid API key","hint":"Double check your API key."}). Работаю со встроенным списком/кэшем.
+[INFO] 23:56:59 Игр в каталоге: 24 (из БД: 0)
+[INFO] 23:56:59 Отслеживаю окно: Save As (code.exe)
+[WARNING] 23:57:00 Не удалось получить id для 'Dota 2': 401 Client Error: Unauthorized for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id&name=eq.Dota%202 | {"message":"Invalid API key","hint":"Double check your API key."}
+[WARNING] 23:57:00 Нет id игры 'Dota 2' — накопленное время сохраню до следующей попытки
+[INFO] 23:57:05 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:57:10 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:57:20 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:57:25 Отслеживаю окно: ● .env - files - Visual Studio Code (code.exe)
+[INFO] 23:57:30 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:57:35 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:57:39 Агент запущен (опрос 5 с, отправка 60 с, AFK-лимит 10 мин)
+[INFO] 23:57:39 Ищу игры: загружаю каталог из Supabase...
+[WARNING] 23:57:40 Каталог из БД недоступен (400 Client Error: Bad Request for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id,name,process_name | {"code":"42703","details":null,"hint":null,"message":"column games.process_name does not exist"}). Работаю со встроенным списком/кэшем.
+[INFO] 23:57:40 Игр в каталоге: 24 (из БД: 0)
+[INFO] 23:57:45 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:58:00 Отслеживаю окно: Наложение Ножниц (snippingtool.exe)
+[INFO] 23:58:05 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:58:10 Отслеживаю окно: Game Time Tracker - Google Chrome (chrome.exe)
+[INFO] 23:58:15 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 23:58:40 Ищу игры: загружаю каталог из Supabase...
+[WARNING] 23:58:41 Каталог из БД недоступен (400 Client Error: Bad Request for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/games?select=id,name,process_name | {"code":"42703","details":null,"hint":null,"message":"column games.process_name does not exist"}). Работаю со встроенным списком/кэшем.
+[INFO] 23:58:41 Игр в каталоге: 24 (из БД: 0)
+[INFO] 23:58:41 Отслеживаю окно: API Keys | Settings | My Project | shutenko2aa@gmail.com | Supabase - Google Chrome (chrome.exe)
+[INFO] 23:58:46 Отслеживаю окно: Untitled query | SQL Editor | My Project | shutenko2aa@gmail.com | Supabase - Google Chrome (chrome.exe)
+[INFO] 23:58:56 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 23:59:01 Отслеживаю окно: Dota 2 (dota2.exe)
+[INFO] 23:59:01 Обнаружена игра: Dota 2
+[INFO] 23:59:42 Ищу игры: загружаю каталог из Supabase...
+[INFO] 23:59:42 Игр в каталоге: 24 (из БД: 4)
+[INFO] 23:59:43 В очередь: Dota 2, 46 с
+[WARNING] 23:59:44 Сессии не отправлены, в очереди 1. Повтор через 10 с. Причина: 404 Client Error: Not Found for url: https://wsdrqnzyoenugojleojc.supabase.co/rest/v1/sessions | {"code":"PGRST205","details":null,"hint":null,"message":"Could not find the table 'public.sessions' in the schema cache"}
+[INFO] 00:00:19 Отслеживаю окно: .env - files - Visual Studio Code (code.exe)
+[INFO] 00:00:19 Игра потеряла фокус — пауза: Dota 2
+[INFO] 00:00:27 Остановлено пользователем
+[INFO] 00:03:32 Агент запущен (опрос 5 с, отправка 60 с, AFK-лимит 10 мин)
+[INFO] 00:03:32 Ищу игры: загружаю каталог из Supabase...
+[INFO] 00:03:33 Игр в каталоге: 24 (из БД: 4)
+[INFO] 00:03:38 Отслеживаю окно: schema.sql - files - Visual Studio Code (code.exe)
+[INFO] 00:03:48 Отслеживаю окно: Dota 2 (dota2.exe)
+[INFO] 00:03:48 Обнаружена игра: Dota 2
+[INFO] 00:04:23 Отслеживаю окно: schema.sql - files - Visual Studio Code (code.exe)
+[INFO] 00:04:23 Игра потеряла фокус — пауза: Dota 2
+[INFO] 00:04:28 Отслеживаю окно: Game Time Tracker - Google Chrome (chrome.exe)
+[INFO] 00:04:34 В очередь: Dota 2, 35 с
+[INFO] 00:04:35 Сессия обновлена в БД: отправлено записей 2
+[INFO] 00:04:40 Отслеживаю окно: schema.sql - files - Visual Studio Code (code.exe)
+[INFO] 00:04:50 Отслеживаю окно: Наложение Ножниц (snippingtool.exe)
+[INFO] 00:04:55 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 00:04:55 Сессия завершена (игра закрыта или свёрнута): Dota 2, играл 0 мин 35 с
+[INFO] 00:05:26 Отслеживаю окно: Game Time Tracker - Google Chrome (chrome.exe)
+[INFO] 00:05:31 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 00:05:46 Отслеживаю окно: Наложение Ножниц (snippingtool.exe)
+[INFO] 00:05:51 Отслеживаю окно: ‎Александр Брат @ ‎origami (150782) (telegram.exe)
+[INFO] 00:05:56 Отслеживаю окно: Наложение Ножниц (snippingtool.exe)
+[INFO] 00:06:01 Отслеживаю окно: ‎Александр Брат @ ‎origami (150782) (telegram.exe)
+[INFO] 00:07:21 Отслеживаю окно: Untitled query | SQL Editor | My Project | shutenko2aa@gmail.com | Supabase - Google Chrome (chrome.exe)
+[INFO] 00:07:26 Отслеживаю окно: План заработка миллиона в 14 лет - Google Gemini - Google Chrome (chrome.exe)
+[INFO] 00:08:46 Отслеживаю окно: Просмотр медиа (telegram.exe)
+[INFO] 00:08:56 Отслеживаю окно: ‎Александр Брат @ ‎origami (150782) (telegram.exe)
