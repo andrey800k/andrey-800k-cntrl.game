@@ -174,6 +174,10 @@ const parentsReasons = [
 
 const chartBars = [42, 68, 51, 82, 61, 92, 73];
 
+// Единые URL — меняются в одном месте
+const TELEGRAM_BOT_URL = "https://t.me/cntrlgame_bot";
+const DOWNLOAD_URL = "/CNTRL.GAMES-Setup.exe";
+
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900">
@@ -273,7 +277,7 @@ export default function Home() {
 
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <a
-                href="#download"
+                href={DOWNLOAD_URL}
                 className="group inline-flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-600/25 sm:w-auto"
               >
                 <Icon name="download" className="h-5 w-5" />
@@ -285,7 +289,9 @@ export default function Home() {
               </a>
 
               <a
-                href="#telegram"
+                href={TELEGRAM_BOT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex w-full items-center justify-center gap-2.5 rounded-2xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-semibold text-slate-800 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md sm:w-auto"
               >
                 <Icon name="telegram" className="h-5 w-5 text-blue-500" />
@@ -748,7 +754,7 @@ export default function Home() {
 
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
             <a
-              href="#"
+              href={DOWNLOAD_URL}
               className="inline-flex items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-7 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
             >
               <Icon name="download" className="h-5 w-5" />
@@ -757,7 +763,9 @@ export default function Home() {
 
             <a
               id="telegram"
-              href="#"
+              href={TELEGRAM_BOT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2.5 rounded-2xl border border-slate-200 bg-white px-7 py-4 text-sm font-semibold text-slate-800 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
             >
               <Icon name="telegram" className="h-5 w-5 text-blue-500" />
@@ -780,10 +788,7 @@ export default function Home() {
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-10 sm:px-8 md:flex-row md:items-center md:justify-between">
           <div>
-            <a
-              href="#top"
-              className="inline-flex items-center gap-2.5"
-            >
+            <a href="#top" className="inline-flex items-center gap-2.5">
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 text-xs font-bold text-white">
                 C
               </span>
@@ -798,10 +803,7 @@ export default function Home() {
           </div>
 
           <nav className="flex flex-wrap gap-x-7 gap-y-3 text-sm text-slate-500">
-            <a
-              href="#"
-              className="transition hover:text-slate-900"
-            >
+            <a href="#" className="transition hover:text-slate-900">
               Политика конфиденциальности
             </a>
             <a
@@ -809,7 +811,7 @@ export default function Home() {
               className="transition hover:text-slate-900"
             >
               Поддержка
-            </a>
+                          </a>
           </nav>
         </div>
       </footer>
