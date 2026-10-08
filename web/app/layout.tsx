@@ -1,8 +1,24 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-export const metadata = {
-  title: "Game Time Tracker",
-  description: "Отслеживание игрового времени",
+const inter = Inter({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "CNTRL.GAMES — Цифровой баланс и развитие вашего ребёнка",
+  description:
+    "Интеллектуальная система мониторинга цифровой активности для осознанных родителей. Помогает следить за экранным временем ребёнка, оценивать качество занятий и вовремя находить баланс.",
+  keywords: [
+    "родительский контроль",
+    "экранное время",
+    "мониторинг игр",
+    "цифровая гигиена",
+    "CNTRL.GAMES",
+  ],
 };
 
 export default function RootLayout({
@@ -11,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru">
-      <body>{children}</body>
+    <html lang="ru" className={inter.variable}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

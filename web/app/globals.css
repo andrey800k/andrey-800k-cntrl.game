@@ -1,64 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: #020617;
-  color: #f8fafc;
-  font-family: system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  padding: 2rem;
-}
-
-main {
-  width: 100%;
-  max-width: 600px;
-}
-
-h1 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #34d399;
-  margin-bottom: 1.5rem;
-}
-
-.card {
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-}
-
-.card h2 {
-  color: #94a3b8;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.75rem;
-}
-
-.status-active {
-  color: #6ee7b7;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.duration {
-  color: #94a3b8;
-}
-
-.duration span {
-  color: #ffffff;
-  font-family: monospace;
-}
-
-.no-session {
-  color: #64748b;
-  font-style: italic;
+  -webkit-font-smoothing: antialiased;
 }

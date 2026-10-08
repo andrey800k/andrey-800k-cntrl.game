@@ -1,21 +1,28 @@
 """
 CNTRL.GAMES — GUI десктопного агента (PyQt6).
 
-Установка:  pip install PyQt6
+Установка:  pip install PyQt6 supabase python-dotenv
+Настройка:  файл .env рядом со скриптом: SUPABASE_URL=...  SUPABASE_KEY=...
 Запуск:     python gui.py          (обычный режим)
             python gui.py --demo   (имитация игры, чтобы посмотреть интерфейс)
 
 Интеграция:
-  * сигнал  window.pin_submitted(str)       -> отправь PIN в Supabase / бот
+  * сигнал  window.pin_submitted(str)       -> PIN проверяет PinVerifierWorker (Supabase)
   * слот    window.set_linked(bool)         -> результат привязки
   * слот    window.show_link_error(str)     -> показать ошибку под полем PIN
   * слот    window.set_activity(name, dt)   -> текущая игра (None, None = не играет)
 Вызывай слоты из потока трекера через pyqtSignal, а не напрямую (Qt не потокобезопасен).
 """
-import sys
-from datetime import datetime, timedelta
+import os, sys, uuid, logging, platform
+from datetime import datetime, timedelta, timezone
 
-from PyQt6.QtCore import Qt, QTimer, QRegularExpression, pyqtSignal, pyqtSlot, QSettings
+import httpx
+from dotenv import load_dotenv
+from supabase import create_client
+from supabase.client import ClientOptions
+from postgrest.exceptions import APIError
+
+from PyQt6.QtCore import Qt, QTimer, QRegularExpression, pyqtSignal, pyqtSlot, QSettings, QThread
 from PyQt6.QtGui import (QAction, QColor, QFont, QIcon, QPainter, QPixmap,
                          QRegularExpressionValidator, QLinearGradient, QBrush)
 from PyQt6.QtWidgets import (QApplication, QFrame, QGraphicsDropShadowEffect, QHBoxLayout,
@@ -23,6 +30,13 @@ from PyQt6.QtWidgets import (QApplication, QFrame, QGraphicsDropShadowEffect, QH
                              QVBoxLayout, QWidget)
 
 APP_NAME, VERSION = "CNTRL.GAMES", "v1.0 MVP"
+
+# ---------------------------------------------------------------- Supabase
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
+SB_URL, SB_KEY = os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY")
+T_CODES, T_DEVICES = "pairing_codes", "devices"
+BAD_PIN = "Неверный или просроченный PIN"
+log = logging.getLogger("gui")
 
 # ---------------------------------------------------------------- стили
 STYLE = """
@@ -88,6 +102,163 @@ class Card(QFrame):
         self.body.addWidget(lbl)
 
 
+class LinkError(Exception):
+    """Ошибка привязки. Текст (str) безопасно показывать пользователю."""
+
+
+def get_device_uid() -> str:
+    """Постоянный id этого ПК (создаётся один раз, хранится в QSettings)."""
+    st = QSettings("CNTRL", "GamesAgent")
+    if not st.contains("device_uid"):
+        st.setValue("device_uid", str(uuid.uuid4()))
+    return str(st.value("device_uid"))
+
+
+def _make_client():
+    if not SB_URL or not SB_KEY:
+        raise LinkError("Не настроен .env (SUPABASE_URL / SUPABASE_KEY)")
+    return create_client(SB_URL, SB_KEY, options=ClientOptions(postgrest_client_timeout=10))
+
+
+def _step_error(step: str, e: APIError) -> LinkError:
+    """Подробно пишет ошибку Supabase в лог и возвращает понятное сообщение для UI."""
+    msg, code = getattr(e, "message", str(e)), getattr(e, "code", "")
+    log.error("[%s] APIError code=%s message=%s details=%s hint=%s",
+              step, code, msg, getattr(e, "details", None), getattr(e, "hint", None))
+    rls = " Нет прав: проверьте RLS-политики таблицы." if code == "42501" or "row-level" in str(msg).lower() else ""
+    return LinkError(f"Шаг «{step}»: {msg}.{rls}")
+
+
+def link_device(code: str, device_uid: str | None = None) -> str:
+    """
+    Привязка ПК по PIN.
+    Возвращает parent_telegram_id (строкой) или бросает LinkError (сообщение для UI).
+    Сетевые ошибки (httpx.TransportError) пробрасываются — их обрабатывает вызывающий.
+    Шаги:
+      1) SELECT pairing_codes по коду
+      2) UPSERT devices с parent_telegram_id
+      3) UPDATE pairing_codes.used = true
+      4) контрольный SELECT devices
+    """
+    code, uid = code.strip(), device_uid or get_device_uid()
+    sb, now = _make_client(), datetime.now(timezone.utc).isoformat()
+    log.info("Привязка: PIN=%s device_uid=%s", code, uid)
+
+    # 1) SELECT pairing_codes
+    try:
+        rows = (sb.table(T_CODES).select("id,parent_telegram_id")
+                .eq("code", code).eq("used", False)
+                .gt("expires_at", now).limit(1).execute().data)
+    except APIError as e:
+        raise _step_error("поиск PIN", e)
+    log.info("SELECT %s: найдено строк: %d", T_CODES, len(rows))
+    if not rows:
+        log.warning("PIN не найден/использован/истёк. Если PIN точно верный — проверьте SELECT-политику RLS.")
+        raise LinkError(BAD_PIN)
+
+    row = rows[0]
+    parent_tg_id = row.get("parent_telegram_id")
+    if not parent_tg_id:
+        raise LinkError("PIN не привязан к Telegram-родителю. Создайте новый код в боте.")
+
+    # 2) UPSERT devices
+    try:
+        res = sb.table(T_DEVICES).upsert({
+            "device_uid": uid,
+            "parent_telegram_id": parent_tg_id,
+            "name": platform.node(),
+            "os": platform.platform(),
+            "is_active": True,
+            "linked_at": now,
+            "last_seen": now,
+        }, on_conflict="device_uid").execute()
+    except APIError as e:
+        raise _step_error("запись устройства", e)
+    if not res.data:
+        log.error("upsert devices вернул пустой ответ — запись, вероятно, не создана (RLS?)")
+        raise LinkError("Шаг «запись устройства»: Supabase не подтвердил запись. Проверьте RLS-политики devices.")
+    log.info("UPSERT %s: ок, id=%s", T_DEVICES, res.data[0].get("id"))
+
+    # 3) UPDATE pairing_codes.used = true
+    try:
+        upd = (sb.table(T_CODES).update({"used": True, "used_at": now})
+               .eq("id", row["id"]).eq("used", False).execute().data)
+    except APIError as e:
+        raise _step_error("погашение PIN", e)
+    if not upd:
+        log.error("UPDATE %s не изменил ни одной строки (PIN уже использован или нет UPDATE-политики)", T_CODES)
+        raise LinkError("Шаг «погашение PIN»: код не удалось пометить использованным (уже занят или нет прав UPDATE).")
+    log.info("UPDATE %s: used=true для id=%s", T_CODES, row["id"])
+
+    # 4) контрольный SELECT
+    try:
+        chk = sb.table(T_DEVICES).select("id").eq("device_uid", uid).limit(1).execute().data
+    except APIError as e:
+        raise _step_error("проверка записи", e)
+    if not chk:
+        raise LinkError("Запись устройства не читается после вставки. Проверьте SELECT-политику devices.")
+
+    log.info("Привязка завершена, parent_telegram_id=%s", parent_tg_id)
+    return str(parent_tg_id)
+
+
+class PinVerifierWorker(QThread):
+    """Выполняет link_device() в отдельном потоке, чтобы GUI не зависал."""
+    success_signal = pyqtSignal(str)   # parent_telegram_id
+    error_signal = pyqtSignal(str)     # текст ошибки для пользователя
+
+    def __init__(self, pin: str, device_uid: str, parent=None):
+        super().__init__(parent)
+        self.pin, self.device_uid = pin, device_uid
+
+    def run(self):
+        try:
+            self.success_signal.emit(link_device(self.pin, self.device_uid))
+        except LinkError as e:
+            self.error_signal.emit(str(e))
+        except (httpx.TransportError, OSError) as e:      # нет интернета, DNS, таймаут
+            log.error("Сетевая ошибка: %r", e)
+            self.error_signal.emit("Нет подключения к интернету. Проверьте сеть и попробуйте снова.")
+        except Exception as e:
+            log.exception("Непредвиденная ошибка привязки")
+            self.error_signal.emit(f"Не удалось выполнить привязку: {type(e).__name__}: {e}"[:160])
+
+
+class LinkCheckWorker(QThread):
+    """При запуске проверяет, что сохранённая «привязка» реально есть в devices."""
+    result = pyqtSignal(bool)
+
+    def __init__(self, device_uid: str, parent=None):
+        super().__init__(parent)
+        self.device_uid = device_uid
+
+    def run(self):
+        try:
+            rows = (_make_client().table(T_DEVICES).select("id").eq("device_uid", self.device_uid)
+                    .eq("is_active", True).limit(1).execute().data)
+            self.result.emit(bool(rows))
+        except Exception as e:      # нет сети и т.п. — состояние не трогаем
+            log.warning("Проверка привязки пропущена: %r", e)
+
+
+class TrackerWorker(QThread):
+    """Крутит session_tracker в отдельном потоке, чтобы GUI не блокировался."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.tracker = None
+
+    def run(self):
+        # Импорт внутри run(), чтобы не тянуть session_tracker на этапе загрузки GUI
+        from session_tracker import SessionTracker, run_tracker_loop
+
+        self.tracker = SessionTracker()
+        if not self.tracker.prepare():
+            log.error("Трекер не стартовал — Supabase недоступен или нет device_id")
+            return
+        run_tracker_loop(self.tracker, poll_interval=3)
+
+
 class MainWindow(QWidget):
     pin_submitted = pyqtSignal(str)   # 6-значный PIN -> наружу (Supabase / бот)
 
@@ -98,6 +269,11 @@ class MainWindow(QWidget):
         self._game: str | None = None
         self._started: datetime | None = None
         self._quitting = False
+        self._worker: PinVerifierWorker | None = None
+        self.tracker_thread: TrackerWorker | None = None
+        if not self.settings.contains("device_uid"):      # постоянный id этого ПК
+            self.settings.setValue("device_uid", str(uuid.uuid4()))
+        self.device_uid = str(self.settings.value("device_uid"))
 
         self.setObjectName("root")
         self.setWindowTitle(APP_NAME); self.setWindowIcon(make_icon())
@@ -114,9 +290,19 @@ class MainWindow(QWidget):
         self._build_tray()
         self.set_linked(self.linked)
         self.set_activity(None, None)
+        self.pin_submitted.connect(self._start_verification)
+        self._check: LinkCheckWorker | None = None
+        if self.linked:     # флаг мог остаться от старой заглушки — сверяем с базой
+            self._check = LinkCheckWorker(self.device_uid, self)
+            self._check.result.connect(self._on_link_checked)
+            self._check.start()
 
         self.clock = QTimer(self, interval=1000)   # живой таймер сессии
         self.clock.timeout.connect(self._tick); self.clock.start()
+
+        # Запускаем трекер в фоне
+        self.tracker_thread = TrackerWorker(self)
+        self.tracker_thread.start()
 
     # ------------------------------------------------ построение UI
     def _build_header(self) -> QHBoxLayout:
@@ -193,6 +379,7 @@ class MainWindow(QWidget):
     @pyqtSlot(str)
     def show_link_error(self, msg: str):
         self.error.setText(msg); self.error.show()
+        self.btn.setText("Привязать ПК")
         self.btn.setEnabled(len(self.pin.text()) == 6)
         self.pin.setEnabled(True)
 
@@ -222,6 +409,29 @@ class MainWindow(QWidget):
         self.btn.setEnabled(False); self.btn.setText("Проверяем…"); self.pin.setEnabled(False)
         self.pin_submitted.emit(pin)
 
+    def _start_verification(self, pin: str):
+        """Запускает проверку PIN в фоновом потоке."""
+        if self._worker and self._worker.isRunning():
+            return
+        self._worker = PinVerifierWorker(pin, self.device_uid, self)
+        self._worker.success_signal.connect(self._on_link_success)
+        self._worker.error_signal.connect(self.show_link_error)
+        self._worker.finished.connect(self._worker.deleteLater)
+        self._worker.start()
+
+    @pyqtSlot(str)
+    def _on_link_success(self, parent_telegram_id: str):
+        self.settings.setValue("parent_telegram_id", parent_telegram_id)   # связка устройства с родителем
+        self.set_linked(True)
+        self.tray.showMessage(APP_NAME, "ПК успешно привязан. Защита активна.",
+                              QSystemTrayIcon.MessageIcon.Information, 3000)
+
+    @pyqtSlot(bool)
+    def _on_link_checked(self, exists: bool):
+        if not exists:
+            log.warning("В devices нет записи для этого ПК — сбрасываю статус «Привязан»")
+            self.set_linked(False)
+
     def _on_tray_activated(self, reason):
         if reason in (QSystemTrayIcon.ActivationReason.Trigger, QSystemTrayIcon.ActivationReason.DoubleClick):
             self.show_window()
@@ -237,6 +447,11 @@ class MainWindow(QWidget):
 
     def quit_app(self):
         self._quitting = True
+        if self._worker and self._worker.isRunning():
+            self._worker.wait(3000)
+        if self.tracker_thread and self.tracker_thread.isRunning():
+            self.tracker_thread.terminate()
+            self.tracker_thread.wait(2000)
         self.tray.hide()
         QApplication.quit()
 
@@ -251,6 +466,10 @@ class MainWindow(QWidget):
 
 # ---------------------------------------------------------------- запуск
 def main():
+    logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(asctime)s %(message)s",
+                        datefmt="%H:%M:%S", handlers=[logging.StreamHandler(),
+                        logging.FileHandler(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                        "gui.log"), encoding="utf-8")])
     app = QApplication(sys.argv)
     app.setStyleSheet(STYLE)
     app.setQuitOnLastWindowClosed(False)       # процесс живёт, пока есть трей
@@ -258,12 +477,6 @@ def main():
         print("[WARN] Системный трей недоступен")
 
     win = MainWindow()
-
-    # --- ЗАГЛУШКА привязки: замени на запрос к Supabase (в отдельном потоке) ---
-    def fake_link(pin: str):
-        QTimer.singleShot(1200, lambda: win.set_linked(True) if pin != "000000"
-                          else win.show_link_error("Неверный или просроченный PIN"))
-    win.pin_submitted.connect(fake_link)
 
     if "--demo" in sys.argv:                   # имитация игровой сессии
         win.set_activity("Counter-Strike 2", datetime.now() - timedelta(minutes=42))
